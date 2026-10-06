@@ -1,0 +1,56 @@
+Week 1 - An integerated program ; Week 1 Task: Java Syntax and Basic Operations
+
+import java.util.Scanner; 
+ 
+public class StudentMarksApp { 
+ 
+    static double calculateAverage(int[] marks) { 
+        int total = 0; 
+ 
+        for (int mark : marks) { 
+            total += mark; 
+        } 
+ 
+        return (double) total / marks.length; 
+    } 
+ 
+    public static void main(String[] args) { 
+        Scanner sc = new Scanner(System.in); 
+ 
+        try { 
+            System.out.print("Enter number of subjects: "); 
+            int n = sc.nextInt(); 
+ 
+            if (n <= 0) { 
+                throw new IllegalArgumentException("Number of subjects must be positive."); 
+            } 
+ 
+            int[] marks = new int[n]; 
+ 
+            for (int i = 0; i < n; i++) { 
+                System.out.print("Enter mark " + (i + 1) + ": "); 
+                marks[i] = sc.nextInt(); 
+ 
+                if (marks[i] < 0 || marks[i] > 100) { 
+                    throw new IllegalArgumentException("Mark must be between 0 and 100."); 
+                } 
+            } 
+ 
+            double average = calculateAverage(marks); 
+ 
+            System.out.println("Average: " + average); 
+ 
+            if (average >= 50) { 
+                System.out.println("Result: Pass"); 
+            } else { 
+                System.out.println("Result: Fail"); 
+            } 
+ 
+        } catch (IllegalArgumentException e) { 
+            System.out.println("Input error: " + e.getMessage()); 
+        } finally { 
+            sc.close(); 
+        } 
+    } 
+} 
+ 
