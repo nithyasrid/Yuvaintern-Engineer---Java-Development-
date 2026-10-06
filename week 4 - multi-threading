@@ -1,0 +1,138 @@
+class Inventory {
+
+    private int stock = 100;
+
+    // Synchronization protects shared stock
+    public synchronized void purchase(
+            String customer,
+            int quantity) {
+
+        System.out.println(
+                Thread.currentThread().getName()
+                + " started order for "
+                + customer
+        );
+
+        if (stock >= quantity) {
+
+            try {
+                // Simulate order processing
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            stock -= quantity;
+
+            System.out.println(
+                    customer
+                    + " purchased "
+                    + quantity
+                    + " items."
+            );
+
+            System.out.println(
+                    "Remaining stock: " + stock
+            );
+
+        } else {
+
+            System.out.println(
+                    customer
+                    + " - Not enough stock."
+            );
+        }
+    }
+
+    public int getStock() {
+        return stock;
+    }
+}
+
+
+// Runnable represents an order-processing task
+class OrderTask implements Runnable {
+
+    private Inventory inventory;
+    private String customer;
+    private int quantity;
+
+    OrderTask(
+            Inventory inventory,
+            String customer,
+            int quantity) {
+
+        this.inventory = inventory;
+        this.customer = customer;
+        this.quantity = quantity;
+    }
+
+    @Override
+    public void run() {
+
+        inventory.purchase(
+                customer,
+                quantity
+        );
+    }
+}
+
+
+public class Main {
+
+    public static void main(String[] args)
+            throws InterruptedException {
+
+        // Shared resource
+        Inventory inventory = new Inventory();
+
+        // Create multiple threads
+        Thread customer1 = new Thread(
+                new OrderTask(
+                        inventory,
+                        "Customer A",
+                        30
+                ),
+                "Order-Thread-1"
+        );
+
+        Thread customer2 = new Thread(
+                new OrderTask(
+                        inventory,
+                        "Customer B",
+                        50
+                ),
+                "Order-Thread-2"
+        );
+
+        Thread customer3 = new Thread(
+                new OrderTask(
+                        inventory,
+                        "Customer C",
+                        40
+                ),
+                "Order-Thread-3"
+        );
+
+        // Start threads
+        customer1.start();
+        customer2.start();
+        customer3.start();
+
+        // Wait for all threads to finish
+        customer1.join();
+        customer2.join();
+        customer3.join();
+
+        // Final result
+        System.out.println();
+        System.out.println(
+                "All orders completed."
+        );
+
+        System.out.println(
+                "Final stock: "
+                + inventory.getStock()
+        );
+    }
+}
