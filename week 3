@@ -1,0 +1,576 @@
+import java.util.*;
+
+public class ECommerceDataStructureSystem {
+
+    // =========================================================
+    // 1. PRODUCT
+    // =========================================================
+    static class Product {
+        int id;
+        String name;
+        double price;
+
+        Product(int id, String name, double price) {
+            this.id = id;
+            this.name = name;
+            this.price = price;
+        }
+
+        @Override
+        public String toString() {
+            return id + " - " + name + " - Rs." + price;
+        }
+    }
+
+
+    // =========================================================
+    // 2. SINGLY LINKED LIST
+    // Shopping Cart
+    // =========================================================
+    static class CartNode {
+        Product product;
+        CartNode next;
+
+        CartNode(Product product) {
+            this.product = product;
+        }
+    }
+
+    static class ShoppingCart {
+        CartNode head;
+
+        void addProduct(Product product) {
+            CartNode newNode = new CartNode(product);
+
+            if (head == null) {
+                head = newNode;
+                return;
+            }
+
+            CartNode current = head;
+
+            while (current.next != null) {
+                current = current.next;
+            }
+
+            current.next = newNode;
+        }
+
+        void displayCart() {
+            CartNode current = head;
+
+            System.out.println("\nSHOPPING CART");
+
+            while (current != null) {
+                System.out.println(current.product);
+                current = current.next;
+            }
+        }
+
+        double calculateTotal() {
+            double total = 0;
+            CartNode current = head;
+
+            while (current != null) {
+                total += current.product.price;
+                current = current.next;
+            }
+
+            return total;
+        }
+    }
+
+
+    // =========================================================
+    // 3. DOUBLY LINKED LIST
+    // Browsing History
+    // =========================================================
+    static class HistoryNode {
+        Product product;
+        HistoryNode previous;
+        HistoryNode next;
+
+        HistoryNode(Product product) {
+            this.product = product;
+        }
+    }
+
+    static class BrowsingHistory {
+        HistoryNode head;
+        HistoryNode tail;
+
+        void visit(Product product) {
+
+            HistoryNode newNode = new HistoryNode(product);
+
+            if (head == null) {
+                head = tail = newNode;
+                return;
+            }
+
+            tail.next = newNode;
+            newNode.previous = tail;
+            tail = newNode;
+        }
+
+        void showHistory() {
+
+            HistoryNode current = head;
+
+            System.out.println("\nBROWSING HISTORY");
+
+            while (current != null) {
+                System.out.println(current.product.name);
+                current = current.next;
+            }
+        }
+    }
+
+
+    // =========================================================
+    // 4. CIRCULAR LINKED LIST
+    // Customer Support Agents
+    // =========================================================
+    static class AgentNode {
+        String agent;
+        AgentNode next;
+
+        AgentNode(String agent) {
+            this.agent = agent;
+        }
+    }
+
+    static class SupportAgents {
+
+        AgentNode tail;
+
+        void addAgent(String name) {
+
+            AgentNode newNode = new AgentNode(name);
+
+            if (tail == null) {
+                tail = newNode;
+                tail.next = tail;
+                return;
+            }
+
+            newNode.next = tail.next;
+            tail.next = newNode;
+            tail = newNode;
+        }
+
+        void rotateAgents() {
+
+            if (tail != null) {
+                tail = tail.next;
+            }
+        }
+
+        void showCurrentAgent() {
+
+            if (tail != null) {
+                System.out.println(
+                    "Current Support Agent: " + tail.next.agent
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // 5. STACK
+    // Undo Recent Actions
+    // =========================================================
+    static class ActionHistory {
+
+        Deque<String> stack = new ArrayDeque<>();
+
+        void performAction(String action) {
+            stack.push(action);
+        }
+
+        void undo() {
+
+            if (!stack.isEmpty()) {
+                System.out.println(
+                    "Undo: " + stack.pop()
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // 6. QUEUE
+    // Pending Orders
+    // =========================================================
+    static class OrderQueue {
+
+        Queue<String> orders = new ArrayDeque<>();
+
+        void placeOrder(String orderId) {
+            orders.offer(orderId);
+        }
+
+        void processOrder() {
+
+            if (!orders.isEmpty()) {
+
+                System.out.println(
+                    "Processing Order: " + orders.poll()
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // 7. PRIORITY QUEUE
+    // Urgent Orders
+    // =========================================================
+    static class UrgentOrder {
+
+        String orderId;
+        int priority;
+
+        UrgentOrder(String orderId, int priority) {
+            this.orderId = orderId;
+            this.priority = priority;
+        }
+    }
+
+    static class UrgentOrderSystem {
+
+        PriorityQueue<UrgentOrder> queue =
+            new PriorityQueue<>(
+                Comparator.comparingInt(
+                    order -> order.priority
+                )
+            );
+
+        void addOrder(String id, int priority) {
+
+            queue.offer(
+                new UrgentOrder(id, priority)
+            );
+        }
+
+        void processUrgentOrder() {
+
+            if (!queue.isEmpty()) {
+
+                UrgentOrder order = queue.poll();
+
+                System.out.println(
+                    "Urgent Order: " + order.orderId
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // 8. BINARY SEARCH TREE
+    // Product Price Search
+    // =========================================================
+    static class TreeNode {
+
+        double price;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode(double price) {
+            this.price = price;
+        }
+    }
+
+    static class ProductPriceTree {
+
+        TreeNode root;
+
+        TreeNode insert(
+            TreeNode node,
+            double price
+        ) {
+
+            if (node == null) {
+                return new TreeNode(price);
+            }
+
+            if (price < node.price) {
+
+                node.left =
+                    insert(node.left, price);
+
+            } else {
+
+                node.right =
+                    insert(node.right, price);
+            }
+
+            return node;
+        }
+
+        void inorder(TreeNode node) {
+
+            if (node == null) {
+                return;
+            }
+
+            inorder(node.left);
+
+            System.out.println(
+                "Price: Rs." + node.price
+            );
+
+            inorder(node.right);
+        }
+    }
+
+
+    // =========================================================
+    // 9. HASHMAP
+    // Fast Product Lookup
+    // =========================================================
+    static class ProductCatalog {
+
+        Map<Integer, Product> products =
+            new HashMap<>();
+
+        void addProduct(Product product) {
+
+            products.put(
+                product.id,
+                product
+            );
+        }
+
+        Product findProduct(int id) {
+
+            return products.get(id);
+        }
+    }
+
+
+    // =========================================================
+    // 10. ARRAY
+    // Product Ratings
+    // =========================================================
+    static void displayRatings() {
+
+        int[] ratings = {
+            5, 4, 5, 3, 4
+        };
+
+        System.out.println("\nPRODUCT RATINGS");
+
+        for (int rating : ratings) {
+
+            System.out.println(
+                "Rating: " + rating + "/5"
+            );
+        }
+    }
+
+
+    // =========================================================
+    // MAIN APPLICATION
+    // =========================================================
+    public static void main(String[] args) {
+
+        // -----------------------------------------------------
+        // PRODUCTS
+        // -----------------------------------------------------
+
+        Product laptop =
+            new Product(
+                101,
+                "Laptop",
+                55000
+            );
+
+        Product phone =
+            new Product(
+                102,
+                "Smartphone",
+                25000
+            );
+
+        Product headphones =
+            new Product(
+                103,
+                "Headphones",
+                3000
+            );
+
+
+        // -----------------------------------------------------
+        // HASHMAP
+        // Product Catalog
+        // -----------------------------------------------------
+
+        ProductCatalog catalog =
+            new ProductCatalog();
+
+        catalog.addProduct(laptop);
+        catalog.addProduct(phone);
+        catalog.addProduct(headphones);
+
+        System.out.println(
+            "HASHMAP PRODUCT LOOKUP"
+        );
+
+        System.out.println(
+            catalog.findProduct(102)
+        );
+
+
+        // -----------------------------------------------------
+        // ARRAY
+        // Ratings
+        // -----------------------------------------------------
+
+        displayRatings();
+
+
+        // -----------------------------------------------------
+        // SINGLY LINKED LIST
+        // Shopping Cart
+        // -----------------------------------------------------
+
+        ShoppingCart cart =
+            new ShoppingCart();
+
+        cart.addProduct(laptop);
+        cart.addProduct(headphones);
+
+        cart.displayCart();
+
+        System.out.println(
+            "Cart Total: Rs."
+            + cart.calculateTotal()
+        );
+
+
+        // -----------------------------------------------------
+        // DOUBLY LINKED LIST
+        // Browsing History
+        // -----------------------------------------------------
+
+        BrowsingHistory history =
+            new BrowsingHistory();
+
+        history.visit(laptop);
+        history.visit(phone);
+        history.visit(headphones);
+
+        history.showHistory();
+
+
+        // -----------------------------------------------------
+        // CIRCULAR LINKED LIST
+        // Support Agents
+        // -----------------------------------------------------
+
+        SupportAgents agents =
+            new SupportAgents();
+
+        agents.addAgent("Agent A");
+        agents.addAgent("Agent B");
+        agents.addAgent("Agent C");
+
+        agents.showCurrentAgent();
+
+        agents.rotateAgents();
+
+        agents.showCurrentAgent();
+
+
+        // -----------------------------------------------------
+        // STACK
+        // Undo Actions
+        // -----------------------------------------------------
+
+        ActionHistory actions =
+            new ActionHistory();
+
+        actions.performAction("Added Laptop");
+        actions.performAction("Added Headphones");
+
+        actions.undo();
+
+
+        // -----------------------------------------------------
+        // QUEUE
+        // Normal Orders
+        // -----------------------------------------------------
+
+        OrderQueue orders =
+            new OrderQueue();
+
+        orders.placeOrder("ORD001");
+        orders.placeOrder("ORD002");
+        orders.placeOrder("ORD003");
+
+        orders.processOrder();
+
+
+        // -----------------------------------------------------
+        // PRIORITY QUEUE
+        // Urgent Orders
+        // -----------------------------------------------------
+
+        UrgentOrderSystem urgentOrders =
+            new UrgentOrderSystem();
+
+        urgentOrders.addOrder(
+            "URG001",
+            1
+        );
+
+        urgentOrders.addOrder(
+            "URG002",
+            3
+        );
+
+        urgentOrders.addOrder(
+            "URG003",
+            2
+        );
+
+        urgentOrders.processUrgentOrder();
+
+
+        // -----------------------------------------------------
+        // BINARY SEARCH TREE
+        // Price Organization
+        // -----------------------------------------------------
+
+        ProductPriceTree priceTree =
+            new ProductPriceTree();
+
+        priceTree.root =
+            priceTree.insert(
+                priceTree.root,
+                laptop.price
+            );
+
+        priceTree.insert(
+            priceTree.root,
+            phone.price
+        );
+
+        priceTree.insert(
+            priceTree.root,
+            headphones.price
+        );
+
+        System.out.println(
+            "\nSORTED PRODUCT PRICES"
+        );
+
+        priceTree.inorder(
+            priceTree.root
+        );
+    }
+}
