@@ -1,1 +1,271 @@
+import java.io.*;
 
+// Custom Exception
+class InvalidStudentException extends Exception {
+
+    public InvalidStudentException(String message) {
+        super(message);
+    }
+}
+
+public class StudentFileManagementSystem {
+
+    static final String FILE_NAME = "students.txt";
+
+    // --------------------------------------------------
+    // 1. CREATE FILE
+    // --------------------------------------------------
+    static void createFile() throws IOException {
+
+        File file = new File(FILE_NAME);
+
+        if (file.exists()) {
+            System.out.println("File already exists.");
+        } else {
+            if (file.createNewFile()) {
+                System.out.println("Student file created successfully.");
+            }
+        }
+    }
+
+    // --------------------------------------------------
+    // 2. ADD STUDENT - WRITE TO FILE
+    // --------------------------------------------------
+    static void addStudent(
+            String name,
+            String department,
+            double cgpa)
+            throws IOException, InvalidStudentException {
+
+        // Custom validation
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidStudentException(
+                    "Student name cannot be empty."
+            );
+        }
+
+        // Unchecked exception using throw
+        if (cgpa < 0 || cgpa > 10) {
+            throw new IllegalArgumentException(
+                    "CGPA must be between 0 and 10."
+            );
+        }
+
+        // Try-with-resources
+        try (FileWriter writer =
+                     new FileWriter(FILE_NAME, true)) {
+
+            writer.write(
+                    name + " | "
+                    + department + " | "
+                    + cgpa + "\n"
+            );
+
+            System.out.println(
+                    "Student added successfully."
+            );
+        }
+    }
+
+    // --------------------------------------------------
+    // 3. READ STUDENTS
+    // --------------------------------------------------
+    static void viewStudents() throws IOException {
+
+        File file = new File(FILE_NAME);
+
+        if (!file.exists()) {
+            System.out.println(
+                    "Student file does not exist."
+            );
+            return;
+        }
+
+        try (BufferedReader reader =
+                     new BufferedReader(
+                             new FileReader(FILE_NAME))) {
+
+            String line;
+
+            System.out.println("\n----- STUDENT RECORDS -----");
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            System.out.println("---------------------------");
+        }
+    }
+
+    // --------------------------------------------------
+    // 4. UPDATE / APPEND STUDENT
+    // --------------------------------------------------
+    static void addAcademicUpdate(
+            String update)
+            throws IOException {
+
+        try (FileWriter writer =
+                     new FileWriter(FILE_NAME, true)) {
+
+            writer.write(
+                    "Academic Update: "
+                    + update + "\n"
+            );
+
+            System.out.println(
+                    "Academic update added."
+            );
+        }
+    }
+
+    // --------------------------------------------------
+    // 5. FILE INFORMATION
+    // --------------------------------------------------
+    static void fileInformation() {
+
+        File file = new File(FILE_NAME);
+
+        if (!file.exists()) {
+            System.out.println(
+                    "File does not exist."
+            );
+            return;
+        }
+
+        System.out.println("\n----- FILE INFORMATION -----");
+
+        System.out.println(
+                "File Name: " + file.getName()
+        );
+
+        System.out.println(
+                "File Path: " + file.getAbsolutePath()
+        );
+
+        System.out.println(
+                "File Size: " + file.length() + " bytes"
+        );
+
+        System.out.println(
+                "Is File: " + file.isFile()
+        );
+
+        System.out.println(
+                "Is Directory: " + file.isDirectory()
+        );
+
+        System.out.println(
+                "----------------------------"
+        );
+    }
+
+    // --------------------------------------------------
+    // 6. DELETE FILE
+    // --------------------------------------------------
+    static void deleteFile() {
+
+        File file = new File(FILE_NAME);
+
+        if (!file.exists()) {
+            System.out.println(
+                    "File does not exist."
+            );
+            return;
+        }
+
+        if (file.delete()) {
+            System.out.println(
+                    "Student file deleted successfully."
+            );
+        } else {
+            System.out.println(
+                    "Unable to delete the file."
+            );
+        }
+    }
+
+    // --------------------------------------------------
+    // MAIN METHOD
+    // --------------------------------------------------
+    public static void main(String[] args) {
+
+        BufferedReader console =
+                new BufferedReader(
+                        new InputStreamReader(System.in)
+                );
+
+        try {
+
+            // Create file
+            createFile();
+
+            // Add students
+            addStudent(
+                    "Nithya",
+                    "ECE",
+                    9.04
+            );
+
+            addStudent(
+                    "Anu",
+                    "CSE",
+                    8.75
+            );
+
+            addStudent(
+                    "Rahul",
+                    "IT",
+                    8.90
+            );
+
+            // Read students
+            viewStudents();
+
+            // Update / append
+            addAcademicUpdate(
+                    "Semester examination completed"
+            );
+
+            // Display updated file
+            viewStudents();
+
+            // Display file information
+            fileInformation();
+
+        }
+
+        // Checked exception
+        catch (IOException e) {
+
+            System.out.println(
+                    "I/O Error: "
+                    + e.getMessage()
+            );
+        }
+
+        // Custom exception
+        catch (InvalidStudentException e) {
+
+            System.out.println(
+                    "Student Error: "
+                    + e.getMessage()
+            );
+        }
+
+        // Unchecked exception
+        catch (IllegalArgumentException e) {
+
+            System.out.println(
+                    "Invalid Input: "
+                    + e.getMessage()
+            );
+        }
+
+        finally {
+
+            System.out.println(
+                    "\nStudent file operation completed."
+            );
+        }
+    }
+}
