@@ -1,0 +1,44 @@
+class Product {
+    private String name;
+    private double price;
+
+    Product(String name, double price) {
+        this.name = name;
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+
+abstract class Payment {
+    abstract void pay(double amount);
+}
+
+class UPI extends Payment {
+    @Override
+    void pay(double amount) {
+        System.out.println("UPI payment: " + amount);
+    }
+}
+
+class Card extends Payment {
+    @Override
+    void pay(double amount) {
+        System.out.println("Card payment: " + amount);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Product product = new Product("Laptop", 50000);
+
+        Payment payment = new UPI();
+        payment.pay(product.getPrice());
+    }
+}
